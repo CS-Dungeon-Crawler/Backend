@@ -12,7 +12,7 @@ import json
 class RoomSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Room
-        fields = ("title", "description")
+        fields = ("id", "title", "description", "n_to", "s_to", "e_to", "w_to")
 
 
 class RoomViewSet(viewsets.ModelViewSet):
@@ -21,6 +21,18 @@ class RoomViewSet(viewsets.ModelViewSet):
 
 
 @api_view(["GET"])
-def something(request):
-    print(request.user.player.uuid)
-    return Response(request.method)
+def initialize(request):
+    player = request.user.player
+    room = player.get_room()
+    all_players = Player.objects.filter(currentRoom=room.id)
+    player_ids = [pl.user.username for pl in all_players if pl.uuid != player.uuid]
+
+    return Response(
+        {
+            "uuid": player.uuid,
+            "name": request.user.username,
+            "title": room.title,
+            "description": room.description,
+            "players": player_ids,
+        }
+    )

@@ -16,11 +16,29 @@ class Room(models.Model):
     e_to = models.IntegerField(default=0)
     w_to = models.IntegerField(default=0)
 
+    # Take in a room and direction to establish connection
+    def connect_room(self, destination, direction):
+        opposite = {"n": "s", "s": "n", "e": "w", "w": "e"}
+        reverse = opposite[direction]
+        id = destination.id
+        try:
+            destination = Room.objects.get(id=id)
+        except Room.DoesNotExist:
+            print("That room does not exist")
+        else:
+            setattr(self, f"{direction}_to", id)
+            setattr(destination, f"{reverse}_to", self.id)
+            self.save()
+            destination.save()
+
 
 class Player(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    currentRoom = models.IntegerField(default=0)
+    currentRoom = models.IntegerField(default=1)
     uuid = models.UUIDField(default=uuid4, primary_key=True, editable=False)
+
+    def get_room(self):
+        return Room.objects.get(id=self.currentRoom)
 
 
 @receiver(post_save, sender=User)

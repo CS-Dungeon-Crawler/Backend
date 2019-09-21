@@ -28,5 +28,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),
     path("api/login/", views.obtain_auth_token),
-    path("api/players", include("adv.urls")),
+    path("api/adv", include("adv.urls")),
 ]
