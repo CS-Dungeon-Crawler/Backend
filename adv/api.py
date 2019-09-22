@@ -1,12 +1,17 @@
 from rest_framework import serializers, viewsets
 from rest_framework.response import Response
+import asyncio
 
-# from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser
+from django.db import connection
+from django.core.management.color import no_style
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from rest_framework.decorators import api_view, permission_classes
 from .models import Room, Player
 import json
+
+from util.create_world import generate_rooms
 
 
 class RoomSerializer(serializers.HyperlinkedModelSerializer):
@@ -36,3 +41,20 @@ def initialize(request):
             "players": player_ids,
         }
     )
+
+
+@api_view(["POST"])
+@permission_classes((IsAdminUser,))
+def gen_rooms(request):
+    Room.objects.all().delete()
+    sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Room])
+    with connection.cursor() as cursor:
+        for sql in sequence_sql:
+            cursor.execute(sql)
+    data = json.loads(request.body)
+    size = data["size"]
+    generate_rooms(size)
+    rooms = Room.objects.all()
+    serializer = RoomSerializer(rooms, many=True)
+    return Response(serializer.data)
+
