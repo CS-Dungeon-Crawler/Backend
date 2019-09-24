@@ -17,26 +17,15 @@ class Room(models.Model):
     w_to = models.IntegerField(default=0)
 
     # Take in a room and direction to establish connection
-
     def connect_room(self, destination, direction):
-        # opposite = {"n": "s", "s": "n", "e": "w", "w": "e"}
-        # reverse = opposite[direction]
         id = destination.id
-        # print("current room", self)
         try:
             destination = Room.objects.get(id=id)
         except Room.DoesNotExist:
             print("That room does not exist")
         else:
             setattr(self, f"{direction}_to", id)
-            # setattr(destination, f"{reverse}_to", self.id)
-            # print("connecting backwards", getattr(destination, f"{reverse}_to"))
-            # something = [self, destination]
-            # with transaction.atomic():
-            #     for i in something:
-            #         i.save()
             self.save()
-            # destination.save()
 
 
 class Player(models.Model):

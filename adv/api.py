@@ -23,7 +23,7 @@ class RoomSerializer(serializers.HyperlinkedModelSerializer):
 
 class RoomViewSet(viewsets.ModelViewSet):
     serializer_class = RoomSerializer
-    queryset = Room.objects.all()
+    queryset = Room.objects.all().order_by("id")
 
 
 @api_view(["GET"])
@@ -47,6 +47,8 @@ def initialize(request):
 @api_view(["POST"])
 @permission_classes((IsAdminUser,))
 def gen_world(request):
+
+    # Delete Rooms in Database and reset ID sequence
     Room.objects.all().delete()
     sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Room])
     with connection.cursor() as cursor:
@@ -55,6 +57,7 @@ def gen_world(request):
 
     data = json.loads(request.body)
     size = data["size"]
+
     create_world(size)
 
     rooms = Room.objects.all().order_by("id")
