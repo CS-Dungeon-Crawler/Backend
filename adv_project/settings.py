@@ -135,7 +135,7 @@ STATIC_URL = "/static/"
 
 from rest_framework.authentication import (
     # SessionAuthentication,
-    BasicAuthentication,
+    # BasicAuthentication,
     TokenAuthentication,
 )
 
@@ -145,7 +145,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticatedOrReadOnly"
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.BasicAuthentication",
+        # "rest_framework.authentication.BasicAuthentication",
         # "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
     ),

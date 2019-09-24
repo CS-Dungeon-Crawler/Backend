@@ -37,11 +37,34 @@ def initialize(request):
         {
             "uuid": player.uuid,
             "name": request.user.username,
+            "room_id": room.id,
             "title": room.title,
             "description": room.description,
             "players": player_ids,
         }
     )
+
+
+@api_view(["POST"])
+def move(request):
+    player = request.user.player
+    current_room_id = player.currentRoom
+
+    current_room = Room.objects.get(id=current_room_id)
+    print(current_room)
+
+    data = json.loads(request.body)
+    direction = data["direction"]
+
+    new_room_id = getattr(current_room, f"{direction}_to")
+    if new_room_id == 0:
+        return Response({"message": "There is no room in that direction"})
+    else:
+        player.currentRoom = new_room_id
+        player.save()
+        new_room = Room.objects.get(id=new_room_id)
+        serializer = RoomSerializer(new_room)
+        return Response({"message": "You moved to a new room", "room": serializer.data})
 
 
 @api_view(["POST"])
