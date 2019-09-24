@@ -12,7 +12,7 @@ from rest_framework.decorators import api_view, permission_classes
 from .models import Room, Player
 import json
 
-from util.create_world import create_world, generate_grid, generate_rooms
+from util.create_world import create_world, generate_rooms
 
 
 class RoomSerializer(serializers.HyperlinkedModelSerializer):
@@ -42,29 +42,6 @@ def initialize(request):
             "players": player_ids,
         }
     )
-
-
-@api_view(["GET", "POST"])
-def connect(request):
-    Room.objects.all().delete()
-    sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Room])
-    with connection.cursor() as cursor:
-        for sql in sequence_sql:
-            cursor.execute(sql)
-    generate_rooms(4)
-    grid = generate_grid(4)
-    rooms = Room.objects.all()
-    room_index = 0
-    for y in range(len(grid)):
-        for x in range(len(grid)):
-            grid[y][x] = rooms[room_index]
-            room_index += 1
-    i = 0
-    while i < 4:
-        grid[0][i].connect_room(grid[1][i], "n")
-        i += 1
-    serializer = RoomSerializer(rooms, many=True)
-    return Response(serializer.data)
 
 
 @api_view(["POST"])
