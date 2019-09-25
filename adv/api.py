@@ -13,6 +13,7 @@ from .models import Room, Player
 import json
 
 from util.create_world import create_world, generate_rooms
+from util.text_generation import room_description
 
 
 class RoomSerializer(serializers.HyperlinkedModelSerializer):

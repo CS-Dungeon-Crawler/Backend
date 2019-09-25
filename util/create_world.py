@@ -3,38 +3,17 @@ from adv.models import Room, Player
 import math
 import random
 
-# Lists to help generate random titles for each room
-adjective_list = [
-    "Dusty",
-    "Moldy",
-    "Scary",
-    "Dark",
-    "Bright",
-    "Small",
-    "Large",
-    "Quiet",
-    "Simple",
-    "Musty",
-]
+from util.text_generation import room_description
 
-room_list = [
-    "Room",
-    "Chamber",
-    "Hall",
-    "Passage",
-    "Cavity",
-    "Hollow",
-    "Cell",
-    "Auditorium",
-    "Antechamer",
-    "Alcove",
-]
 
 # Add total number of rooms to the Database
 def generate_rooms(size):
     for i in range(size * size):
-        title = f"{random.choice(adjective_list)} {random.choice(room_list)}"
-        r = Room.objects.create(title=title, description="Generic")
+        # title = f"{random.choice(adjective_list)} {random.choice(room_list)}"
+        new_room = room_description()
+        r = Room.objects.create(
+            title=new_room["title"], description=new_room["description"]
+        )
         r.save()
 
 

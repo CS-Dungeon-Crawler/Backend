@@ -1,0 +1,48 @@
+adjective_list = [
+    "Dusty",
+    "Moldy",
+    "Scary",
+    "Dark",
+    "Bright",
+    "Small",
+    "Large",
+    "Quiet",
+    "Simple",
+    "Musty",
+]
+
+room_list = [
+    "Room",
+    "Chamber",
+    "Hall",
+    "Passage",
+    "Cavity",
+    "Hollow",
+    "Cell",
+    "Auditorium",
+    "Antechamer",
+    "Alcove",
+]
+
+description_list = [
+    "You enter a foggy area. There's a huge skeleton in the center, along with dozens of human skeletons.",
+    "You enter a dark area. It's filled with tombs, but their owners are spread across the floor.",
+    "You enter a filthy area. It's filled with tombs, some of which no longer hold their owner.",
+    "You enter a grimy area. There's a demolished door with a sign that says 'don't open'.",
+    "You enter a dark area. An enormous beastly skeleton is chained to the walls.",
+    "You enter a weary area. There are several braziers scattered around, somehow they're still burning, or burning again.",
+    "You enter a clammy area. Piles and piles of gold lie in the center, several skeletons lie next to it.",
+    "You enter a ghostly area. Several cages hold skeletal remains of various animals. Next to the cages are odd machines.",
+    "You enter a ghastly area. There's a seemingly endless hole in the center. Around it are what seem like runes.",
+    "You enter a clammy area. There's machinery all over the place, probably part of a workshop of sorts.",
+    "You enter a damp area. The floor is riddled with shredded blue prints and a half finished machine sits in a corner.",
+    "You enter a grimy area. It's littered with skeletons, but no weaponry in sight.",
+    "You enter a ragged area. Small holes and carved paths cover the walls, it looks like a community or burrow for small creatures.",
+    "You enter a dark area. It's filled with strange glowing crystals and countless dead vermin.",
+    "You enter a foggy area. There's a pile of skeletons in the center, all burned and black.",
+    "You enter a dusty area. Rows upon rows of shelves are packed with books or remnants of books. In the center sits a single skeleton.",
+    "You enter a timeworn area. The room is filled with lifelike statues of terrified people.",
+    "You enter a timeworn area. Spiderwebs cover everything, large figures seem to be wrapped in the same web.",
+    "You enter a ghastly area. It's packed with boxes full of runes and magical equipment, as well as skeletons.",
+    "You enter a dank area. There's a huge skeleton in the center, along with dozens of human skeletons.",
+]
