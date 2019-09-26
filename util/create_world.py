@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from adv.models import Room, Player
+from adv.models import Room, Player, Item
 import math
 import random
 
@@ -8,12 +8,19 @@ from util.text_generation import room_description
 
 # Add total number of rooms to the Database
 def generate_rooms(size):
+    items = Item.objects.all()
     for i in range(size * size):
         # title = f"{random.choice(adjective_list)} {random.choice(room_list)}"
+        add_items = random.randint(0, 2)
         new_room = room_description()
         r = Room.objects.create(
             title=new_room["title"], description=new_room["description"]
         )
+
+        while add_items > 0:
+            r.items.add(random.choice(items))
+            add_items -= 1
+
         r.save()
 
 

@@ -16,6 +16,8 @@ gunicorn = "*"
 django-heroku = "*"
 django-rest-api = "*"
 dj-database-url = "*"
+django-polymorphic = "*"
+django-rest-polymorphic = "*"
 
 [requires]
 python_version = "3.7"

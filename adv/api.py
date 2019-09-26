@@ -9,22 +9,17 @@ from django.core.management.color import no_style
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from rest_framework.decorators import api_view, permission_classes
-from .models import Room, Player
+from .models import Room, Player, Item, Armor, Weapon
+from .serializers import ItemPolymorphicSerializer, RoomSerializer
 import json
 
 from util.create_world import create_world, generate_rooms
 from util.text_generation import room_description
 
 
-class RoomSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Room
-        fields = ("id", "title", "description", "n_to", "s_to", "e_to", "w_to")
-
-
-class RoomViewSet(viewsets.ModelViewSet):
-    serializer_class = RoomSerializer
-    queryset = Room.objects.all().order_by("id")
+@api_view(["GET"])
+def test(request):
+    pass
 
 
 @api_view(["GET"])
@@ -33,6 +28,8 @@ def initialize(request):
     room = player.get_room()
     all_players = Player.objects.filter(currentRoom=room.id)
     player_ids = [pl.user.username for pl in all_players if pl.uuid != player.uuid]
+    treasure = ItemPolymorphicSerializer(room.items, many=True)
+    inventory = ItemPolymorphicSerializer(player.items, many=True)
 
     return Response(
         {
@@ -42,6 +39,8 @@ def initialize(request):
             "title": room.title,
             "description": room.description,
             "players": player_ids,
+            "inventory": inventory.data,
+            "treasure": treasure.data,
         }
     )
 
@@ -52,7 +51,6 @@ def move(request):
     current_room_id = player.currentRoom
 
     current_room = Room.objects.get(id=current_room_id)
-    print(current_room)
 
     data = json.loads(request.body)
     direction = data["direction"]
@@ -66,6 +64,40 @@ def move(request):
         new_room = Room.objects.get(id=new_room_id)
         serializer = RoomSerializer(new_room)
         return Response({"message": "You moved to a new room", "room": serializer.data})
+
+
+@api_view(["POST"])
+def take(request):
+    player = request.user.player
+    current_room_id = player.currentRoom
+    current_room = Room.objects.get(id=current_room_id)
+
+    data = json.loads(request.body)
+    id = data["id"]
+
+    loot = current_room.items.get(id=id)
+    current_room.items.remove(loot)
+    player.items.add(loot)
+    player.save()
+
+    return Response({"message": f"You looted {loot.name}"})
+
+
+@api_view(["POST"])
+def drop(request):
+    player = request.user.player
+    current_room_id = player.currentRoom
+    current_room = Room.objects.get(id=current_room_id)
+
+    data = json.loads(request.body)
+    id = data["id"]
+
+    loot = player.items.get(id=id)
+    player.items.remove(loot)
+    current_room.items.add(loot)
+    current_room.save()
+
+    return Response({"message": f"You dropped {loot.name}"})
 
 
 @api_view(["POST"])

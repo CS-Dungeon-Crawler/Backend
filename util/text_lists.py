@@ -20,7 +20,7 @@ room_list = [
     "Hollow",
     "Cell",
     "Auditorium",
-    "Antechamer",
+    "Antechamber",
     "Alcove",
 ]
 
