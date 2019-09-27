@@ -17,7 +17,7 @@ def generate_rooms(size):
             title=new_room["title"], description=new_room["description"]
         )
 
-        while add_items > 0:
+        while add_items > 0 and len(items) != 0:
             r.items.add(random.choice(items))
             add_items -= 1
 

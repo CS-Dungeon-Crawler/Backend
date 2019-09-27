@@ -19,7 +19,15 @@ from util.text_generation import room_description
 
 @api_view(["GET"])
 def test(request):
-    pass
+    item_query = Item.objects.not_instance_of(Armor, Weapon)
+    armor_query = Armor.objects.instance_of(Armor)
+    weapon_query = Weapon.objects.instance_of(Weapon)
+
+    items = ItemPolymorphicSerializer(item_query, many=True)
+    armor = ItemPolymorphicSerializer(armor_query, many=True)
+    weapons = ItemPolymorphicSerializer(weapon_query, many=True)
+
+    return Response({"items": items.data, "armor": armor.data, "weapons": weapons.data})
 
 
 @api_view(["GET"])
@@ -51,13 +59,14 @@ def move(request):
     current_room_id = player.currentRoom
 
     current_room = Room.objects.get(id=current_room_id)
+    current_room_ser = RoomSerializer(current_room)
 
     data = json.loads(request.body)
     direction = data["direction"]
 
     new_room_id = getattr(current_room, f"{direction}_to")
     if new_room_id == 0:
-        return Response({"message": "There is no room in that direction"})
+        return Response({"message": "There is no room in that direction", "room": current_room_ser.data})
     else:
         player.currentRoom = new_room_id
         player.save()
