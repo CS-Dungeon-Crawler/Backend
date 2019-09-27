@@ -35,6 +35,26 @@ def create_world(size):
     opposite = {"n": "s", "s": "n", "e": "w", "w": "e"}
     direction_dict = {"n_to": -n, "s_to": n, "w_to": -1, "e_to": 1}
 
+    index = 0
+    while index < len(rooms) - 1:
+        path_list = [1, n]
+        if index % n == n - 1:
+            next_step = n
+        elif math.ceil(index / n) == n or index == n * (n - 1):
+            next_step = 1
+        else:
+            next_step = random.choice(path_list)
+
+        next_room = index + next_step
+        next_direction = [
+            key for key, val in direction_dict.items() if val == next_step
+        ][0][0]
+
+        rooms[index].connect_room(rooms[next_room], next_direction)
+        rooms[next_room].connect_room(rooms[index], opposite[next_direction])
+
+        index = next_room
+
     # Iterate through every room
     for i, room in enumerate(rooms):
         # Make a copy of the list as items will be deleted
@@ -45,7 +65,7 @@ def create_world(size):
         # Set ineligible directions for each corner of the grid
         if i == 0 or i == n - 1 or i == n * (n - 1) or i == n * n - 1:
             # max_connections = 2
-            data_list = [1] * 3  + [2] * 2
+            data_list = [1] * 3 + [2] * 2
             if i == 0:
                 del_list = ["n_to", "w_to"]
             elif i == n - 1:
