@@ -10,7 +10,6 @@ from util.text_generation import room_description
 def generate_rooms(size):
     items = Item.objects.all()
     for i in range(size * size):
-        # title = f"{random.choice(adjective_list)} {random.choice(room_list)}"
         add_items = random.randint(0, 2)
         new_room = room_description()
         r = Room.objects.create(
@@ -35,9 +34,12 @@ def create_world(size):
     opposite = {"n": "s", "s": "n", "e": "w", "w": "e"}
     direction_dict = {"n_to": -n, "s_to": n, "w_to": -1, "e_to": 1}
 
-    # Create a random continuous path from starting room to opposite corner
+    # Create a random continuous path from one corner to its opposite corner. 
+    # Only moves left or down to avoid overly long and redundant paths
     index = 0
+    rev_index = n - 1
     while index < len(rooms) - 1:
+        # Pick a direction. Either right or down
         path_list = [1, n]
         if index % n == n - 1:
             next_step = n
@@ -46,14 +48,28 @@ def create_world(size):
         else:
             next_step = random.choice(path_list)
 
+        # Set step to next room in path from top left to bottom right
         next_room = index + next_step
         next_direction = [
             key for key, val in direction_dict.items() if val == next_step
         ][0][0]
 
+        # Make connection between the two rooms
         rooms[index].connect_room(rooms[next_room], next_direction)
         rooms[next_room].connect_room(rooms[index], opposite[next_direction])
 
+        # Set path from top right to bottom left
+        rev_step = -next_step if next_step == 1 else next_step
+        rev_room = rev_index + rev_step
+        rev_direction = [key for key, val in direction_dict.items() if val == rev_step][
+            0
+        ][0]
+
+        # Make connection between the two rooms
+        rooms[rev_index].connect_room(rooms[rev_room], rev_direction)
+        rooms[rev_room].connect_room(rooms[rev_index], opposite[rev_direction])
+
+        rev_index = rev_room
         index = next_room
 
     # Iterate through every room
@@ -84,7 +100,7 @@ def create_world(size):
             or math.ceil(i / n) == n
         ):
             # max_connections = 3
-            data_list = [0] + [1] * 5 + [2] * 2 + [3] * 2
+            data_list = [1] * 6 + [2] * 3 + [3] * 3
             if i % n == n - 1:
                 del_list = ["e_to"]
             elif i % n == 0:
@@ -95,7 +111,7 @@ def create_world(size):
                 del_list = ["s_to"]
         else:
             # max_connections = 4
-            data_list = [1] * 2 + [2] * 6 + [3] * 4
+            data_list = [1] * 5 + [2] * 6 + [3] * 3
 
         # Ammend list of directions
         for dr in del_list:
