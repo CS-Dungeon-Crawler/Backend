@@ -35,6 +35,7 @@ def create_world(size):
     opposite = {"n": "s", "s": "n", "e": "w", "w": "e"}
     direction_dict = {"n_to": -n, "s_to": n, "w_to": -1, "e_to": 1}
 
+    # Create a random continuous path from starting room to opposite corner
     index = 0
     while index < len(rooms) - 1:
         path_list = [1, n]
@@ -83,7 +84,7 @@ def create_world(size):
             or math.ceil(i / n) == n
         ):
             # max_connections = 3
-            data_list = [1] * 5 + [2] * 3 + [3] * 2
+            data_list = [0] + [1] * 5 + [2] * 2 + [3] * 2
             if i % n == n - 1:
                 del_list = ["e_to"]
             elif i % n == 0:
