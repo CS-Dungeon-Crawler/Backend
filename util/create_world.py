@@ -44,7 +44,8 @@ def create_world(size):
 
         # Set ineligible directions for each corner of the grid
         if i == 0 or i == n - 1 or i == n * (n - 1) or i == n * n - 1:
-            max_connections = 2
+            # max_connections = 2
+            data_list = [1] * 6 + [2] * 3
             if i == 0:
                 del_list = ["n_to", "w_to"]
             elif i == n - 1:
@@ -61,7 +62,8 @@ def create_world(size):
             or i % n == n - 1
             or math.ceil(i / n) == n
         ):
-            max_connections = 3
+            # max_connections = 3
+            data_list = [1] * 5 + [2] * 3 + [3] * 2
             if i % n == n - 1:
                 del_list = ["e_to"]
             elif i % n == 0:
@@ -71,14 +73,19 @@ def create_world(size):
             else:
                 del_list = ["s_to"]
         else:
-            max_connections = 4
+            # max_connections = 4
+            data_list = [1] * 2 + [2] * 6 + [3] * 4
 
         # Ammend list of directions
         for dr in del_list:
             temp.remove(dr)
 
+        old_connections = 0
+        for dr in direction_list:
+            old_connections += 1 if getattr(room, dr) != 0 else 0
+
         # Set a random number of connections for current room
-        connections = random.randint(0, max_connections)
+        connections = random.choice(data_list) - old_connections
 
         # Create each connection
         while connections > 0:
