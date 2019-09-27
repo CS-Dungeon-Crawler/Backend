@@ -45,7 +45,7 @@ def create_world(size):
         # Set ineligible directions for each corner of the grid
         if i == 0 or i == n - 1 or i == n * (n - 1) or i == n * n - 1:
             # max_connections = 2
-            data_list = [1] * 6 + [2] * 3
+            data_list = [1] * 3  + [2] * 2
             if i == 0:
                 del_list = ["n_to", "w_to"]
             elif i == n - 1:
